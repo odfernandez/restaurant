@@ -1,3 +1,41 @@
+<?php 
+session_start();
+if($_POST){
+    include("bd.php");
+
+    $usuario = (isset($_POST["usuario"])) ? $_POST["usuario"] : "";
+    $password = (isset($_POST["password"])) ? $_POST["password"] : "";
+    $password = md5($password);
+
+    $sentencia = $conexion->prepare("SELECT COUNT(*) AS n_usuario 
+                FROM tbl_usuarios 
+                WHERE usuario = :usuario 
+                AND password = :password");
+                
+                $sentencia->bindParam(":usuario", $usuario);
+                $sentencia->bindParam(":password", $password);
+                $sentencia->execute();
+
+                $lista_usuarios = $sentencia->fetch(PDO::FETCH_LAZY);
+                $n_usuario = $lista_usuarios["n_usuario"];
+
+               if($n_usuario > 0){
+                    
+                    $_SESSION["usuario"] = $usuario;
+                    $_SESSION["logueado"] = true;
+                    header("Location: index.php");
+                    exit;
+                }else{
+                    $mensaje = "Usuario o contraseña incorrectos...";
+                    //header("Location: login.php");
+                    //exit;
+                }
+}
+
+?>
+
+
+
 <!doctype html>
 <html lang="en">
     <head>
@@ -25,11 +63,19 @@
                 <div class="row">
                     <div class="col"></div>
                     <div class="col">
-                        <br/>
+                        <br/><br/>
+                        <?php
+                            if(isset($mensaje)){?>
+
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Error: </strong> <?php echo $mensaje; ?>
+                            </div>
+                        <?php } ?>
+                        
                         <div class="card text-center">
                             <div class="card-header"> Login </div>    
                             <div class="card-body">
-                                <form action="" method="post">
+                                <form action="login.php" method="post">
                                     <div class="mb-3">
                                         <label for="" class="form-label">Usuario:</label>
                                         <input type="text" class="form-control" name="usuario" id="usuario" aria-describedby="helpId"
@@ -41,8 +87,7 @@
                                         <input type="password" class="form-control" name="password" id="password" />
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary"> Entrar </button>
-                                    
+                                    <button type="submit" class="btn btn-primary"> Entrar </button> 
                                 </form>  
                             </div>
                         </div>

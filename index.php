@@ -2,15 +2,46 @@
 
 include("admin/bd.php");
 
-
+//Consulta de banners por medio del ID y mostrarlos en la página principal
 $sentencia = $conexion -> prepare("SELECT * FROM tbl_banners ORDER BY ID ASC limit 1 "); 
 $sentencia -> execute();
-
 $lista_banners = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
 
+//Consulta de colaboradores por medio del ID y mostrarlos en la página principal
+$sentencia = $conexion -> prepare("SELECT * FROM tbl_colaboradores ORDER BY ID ASC limit 3 "); 
+$sentencia -> execute();
+$lista_colaboradores = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
+
+//Consulta de testimonios por medio del ID y mostrarlos en la página principal
+$sentencia = $conexion -> prepare("SELECT * FROM tbl_testimonios ORDER BY ID DESC limit 2 "); 
+$sentencia -> execute();
+$lista_testimonios = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
+
+//Consulta de menús por medio del ID y mostrarlos en la página principal
+$sentencia = $conexion -> prepare("SELECT * FROM tbl_menu ORDER BY ID DESC limit 4 "); 
+$sentencia -> execute();
+$lista_menu = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
+
+//Proceso de registro de los comentarios
+if($_POST){
+    
+    $nombre = filter_var($_POST["nombre"], FILTER_SANITIZE_STRING);
+    $correo = filter_var($_POST["correo"], FILTER_SANITIZE_EMAIL);
+    $mensaje = filter_var($_POST["mensaje"], FILTER_SANITIZE_STRING);
+
+    if($nombre && $correo && $mensaje){
+        $sql = "INSERT INTO tbl_comentarios (nombre, correo, mensaje) 
+        VALUES (:nombre, :correo, :mensaje)";
+        $sentencia = $conexion -> prepare($sql);
+        $sentencia -> bindParam(":nombre", $nombre, PDO::PARAM_STR);
+        $sentencia -> bindParam(":correo", $correo, PDO::PARAM_STR);
+        $sentencia -> bindParam(":mensaje", $mensaje, PDO::PARAM_STR);
+        $sentencia -> execute();
+    }
+    header("Location: index.php");
+}
+
 ?>
-
-
 
 <!doctype html>
 <html lang="en">
@@ -112,61 +143,25 @@ $lista_banners = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
         <section id="chefs" class="container mt-4 text-center">
             <h2>Nuestros Chefs</h2>
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="images/partners/team-image4.jpeg" 
-                        alt="Chef 1" 
-                        class="card-img-top"/>
-                        
-                        <div class="card-body">
-                            <h5 class="card-title"> Chef 1 </h5>
-                            <p class="card-text"> La chef Marisa </p>
-                            <div class="social-icons mt-3">
-                                <a href="#" class="text-dark me-2"><i class="fab fa-facebook"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-linkedin"></i></a>
-                            </div>
-                        </div>                      
+                <?php foreach($lista_colaboradores as $chef){ ?>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="images/partners/<?php  echo $chef['foto']; ?>" 
+                            alt="Chef 1" 
+                            class="card-img-top"/>
+                            <div class="card-body">
+                                <h5 class="card-title"> <?php  echo $chef['titulo']; ?> </h5>
+                                <p class="card-text"> <?php  echo $chef['descripcion']; ?> </p>
+                                <div class="social-icons mt-3">
+                                    <a href="<?php  echo $chef['linkfacebook']; ?>" class="text-dark me-2"><i class="fab fa-facebook"></i></a>
+                                    <a href="<?php  echo $chef['linkinstagram']; ?>" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
+                                    <a href="<?php  echo $chef['linklinkedin']; ?>" class="text-dark me-2"><i class="fab fa-linkedin"></i></a>
+                                </div>
+                            </div>                      
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="images/partners/team-image2.jpeg" 
-                        alt="Chef 1" 
-                        class="card-img-top"/>
-                        
-                        <div class="card-body">
-                            <h5 class="card-title"> Chef 2 </h5>
-                            <p class="card-text"> La chef Stefanni </p>
-                            <div class="social-icons mt-3">
-                                <a href="#" class="text-dark me-2"><i class="fab fa-facebook"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-linkedin"></i></a>
-                            </div>
-                        </div>                      
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="card">
-                        <img src="images/partners/team-image5.jpeg" 
-                        alt="Chef 1" 
-                        class="card-img-top"/>
-                        
-                        <div class="card-body">
-                            <h5 class="card-title"> Chef 3 </h5>
-                            <p class="card-text"> La chef Michelle </p>
-                            <div class="social-icons mt-3">
-                                <a href="#" class="text-dark me-2"><i class="fab fa-facebook"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-instagram"></i></a>
-                                <a href="#" class="text-dark me-2"><i class="fab fa-linkedin"></i></a>
-                            </div>
-                        </div>                      
-                    </div>
-                </div>
+                <?php } ?>
             </div>
-
         </section>
 
         <!-- Sección de Testimonios -->
@@ -174,27 +169,18 @@ $lista_banners = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
             <div class="container">
                 <h2 class="text-center mb-4">Testimonios</h2>
                 <div class="row">
-                    <div class="col-md-6 d-flex">
-                        <div class="card mb-4 w-100">
-                            <div class="card-body">
-                                <p class="card-text"> Muy buena cominda </p>
-                            </div>
-                            <div class="card-footer text-muted">
-                                Oscar Uh
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 d-flex">
-                        <div class="card mb-4 w-100">
-                            <div class="card-body">
-                                <p class="card-text"> Muy buena cominda </p>
-                            </div>
-                            <div class="card-footer text-muted">
-                                Oscar Uh
+                    <?php foreach($lista_testimonios as $testimonio) { ?>
+                        <div class="col-md-6 d-flex">
+                            <div class="card mb-4 w-100">
+                                <div class="card-body">
+                                    <p class="card-text"> <?php  echo $testimonio['opinion']; ?> </p>
+                                </div>
+                                <div class="card-footer text-muted">
+                                    <?php  echo $testimonio['nombre']; ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    <?php } ?>
                 </div>
             </div>
 
@@ -205,47 +191,18 @@ $lista_banners = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
             <h2 class="text-center"> Menú (nuestra recomendación) </h2>
             <br/>
             <div class="row row-cols-1 row-cols-md-4 g-4">
-                <div class="col d-flex">
-                    <div class="card">
-                        <img src="images/menu/menu-image6.jpg" class="card-img-top" alt="Filete">
-                        <div class="card-body">
-                            <h5 class="card-title"> Filete </h5>
-                            <p class="card-text small"> <strong> Ingredientes </strong> Carne, Zanahorias, Papas </p>
-                            <p class="card-text"> <strong> Precio: </strong> $15 </p>
+                <?php foreach($lista_menu as $menu) { ?>
+                    <div class="col d-flex">
+                        <div class="card">
+                            <img src="images/menu/<?php echo $menu['foto']; ?>" class="card-img-top" alt="">
+                            <div class="card-body">
+                                <h5 class="card-title"> <?php echo $menu['nombre']; ?> </h5>
+                                <p class="card-text small"> <strong> Ingredientes: </strong> <?php echo $menu['ingredientes']; ?> </p>
+                                <p class="card-text"> <strong> Precio: </strong> $<?php echo $menu['precio']; ?> </p>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col d-flex">
-                    <div class="card">
-                        <img src="images/menu/menu-image4.jpg" class="card-img-top" alt="Filete">
-                        <div class="card-body">
-                            <h5 class="card-title"> Filete </h5>
-                            <p class="card-text"> <strong> Precio: </strong> $15 </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col d-flex">
-                    <div class="card">
-                        <img src="images/menu/menu-image7.jpg" class="card-img-top" alt="Filete">
-                        <div class="card-body">
-                            <h5 class="card-title"> Filete </h5>
-                            <p class="card-text"> <strong> Precio: </strong> $15 </p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col d-flex">
-                    <div class="card">
-                        <img src="images/menu/menu-image11.jpg" class="card-img-top" alt="Filete">
-                        <div class="card-body">
-                            <h5 class="card-title"> Salmón </h5>
-                            <p class="card-text"> <strong> Precio: </strong> $12 </p>
-                        </div>
-                    </div>
-                </div>
-
+                <?php } ?>
             </div>
         </section>
         <br/><br/>
@@ -268,8 +225,8 @@ $lista_banners = $sentencia -> fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 
                 <div class="mb-3">
-                    <label for="message"> Mensaje: </label><br/>
-                    <textarea class="form-control" name="mensaje" id="message" rows="6" cols="50"></textarea><br/>
+                    <label for="mensaje"> Mensaje: </label><br/>
+                    <textarea class="form-control" name="mensaje" id="mensaje" rows="6" cols="50"></textarea><br/>
                 </div>
 
                 <input type="submit" class="btn btn-primary" value="Enviar mensaje">
