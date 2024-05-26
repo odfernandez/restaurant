@@ -32,19 +32,19 @@ include("../../templates/header.php"); ?>
                 <label for="usuario" class="form-label">Usuario: </label>
                 <input type="text" class="form-control" 
                 name="usuario" id="usuario" aria-describedby="helpId" 
-                placeholder="Escriba el usuario"/>
+                placeholder="Escriba el usuario" required/>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password:</label>
-                <input type="text" class="form-control"
+                <input type="password" class="form-control"
                     name="password" id="password" aria-describedby="helpId"
-                    placeholder="Escriba el password"/>
+                    placeholder="Escriba el password" required/>
             </div>
             <div class="mb-3">
                 <label for="correo" class="form-label">Correo:</label>
-                <input type="text" class="form-control"
+                <input type="email" class="form-control"
                     name="correo" id="correo" aria-describedby="helpId"
-                    placeholder="Escriba el correo"/>
+                    placeholder="Escriba el correo" required/>
             </div>
             
             <button type="submit" class="btn btn-success">Crear Usuario</button>

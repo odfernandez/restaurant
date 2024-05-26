@@ -79,12 +79,12 @@ if($_POST){
                                     <div class="mb-3">
                                         <label for="" class="form-label">Usuario:</label>
                                         <input type="text" class="form-control" name="usuario" id="usuario" aria-describedby="helpId"
-                                            placeholder=""/>
+                                            placeholder="Usuario" required/>
                                     </div>
 
                                     <div class="mb-3">
                                         <label for="" class="form-label">Password:</label>
-                                        <input type="password" class="form-control" name="password" id="password" />
+                                        <input type="password" class="form-control" name="password" id="password" placeholder="Usuario" required />
                                     </div>
 
                                     <button type="submit" class="btn btn-primary"> Entrar </button> 

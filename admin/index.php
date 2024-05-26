@@ -8,7 +8,7 @@
             <p>
                 Este espacio es para administrar su sitio web
             </p>
-            <button class="btn btn-outline-primary" type="button"> Iniciar ahora </button>
+            <!-- <button class="btn btn-outline-primary" type="button"> Iniciar ahora </button> -->
         </div>
     </div>
 </div>
